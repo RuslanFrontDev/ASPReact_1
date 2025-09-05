@@ -12,8 +12,11 @@ builder.Services.AddDbContext<DataContext>(options =>
     options.UseSqlite(connectionString);
 });
 
+// CORS
+builder.Services.AddCors();
+
 // Add services to the container.
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllers();
 
 // 🔹 Swagger burada əlavə olunur (Build-dən əvvəl)
 builder.Services.AddEndpointsApiExplorer();
@@ -46,12 +49,14 @@ else
 app.UseHttpsRedirection();
 app.UseRouting();
 
+app.UseCors(opt =>
+{
+    opt.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:3000");
+});
 app.UseAuthorization();
 
 // app.MapStaticAssets();
 
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+app.MapControllers();
 
 app.Run();
